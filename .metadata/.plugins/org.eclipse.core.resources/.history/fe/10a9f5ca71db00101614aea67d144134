@@ -1,0 +1,23 @@
+package com.example_Backend.repository;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example_Backend.entity.UserEntity;
+
+
+
+@FeignClient(name = "smart-crop-advisory-backend" , url = "http://localhost:8082")
+
+public interface FeignClientconfig {
+	
+	@GetMapping("/User/demo")
+	public String demo();
+	
+	
+	@GetMapping("/getuserbyusername")
+	public UserEntity getuserbyusername(@RequestParam("email") String email);
+	
+	
+}

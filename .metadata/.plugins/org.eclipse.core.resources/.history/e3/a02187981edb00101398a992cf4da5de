@@ -1,0 +1,8 @@
+package com.example_Backend.repository;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(name = "Smart_crop_advisory_backend")
+public interface FeignClientconfig {
+
+}

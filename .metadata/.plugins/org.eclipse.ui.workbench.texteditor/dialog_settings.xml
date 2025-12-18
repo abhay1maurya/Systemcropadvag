@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="false"/>
+		<list key="findhistory">
+			<item value="blog-read-btn"/>
+			<item value="blog-post-card"/>
+			<item value="blog-load-more-container mt-4"/>
+			<item value="blog-load-btn"/>
+			<item value="loadMoreBtn"/>
+			<item value="form"/>
+			<item value="createPostForm"/>
+			<item value="blog-create-header-btn"/>
+			<item value="btn_share_story"/>
+			<item value="sectionCreateBtn"/>
+		</list>
+	</section>
+</section>

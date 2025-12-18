@@ -1,0 +1,13 @@
+package com.example_Backend.repository;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@FeignClient(name = "Smart_crop_advisory_backend")
+public interface FeignClientconfig {
+	
+	@GetMapping("/demo")
+	public String demo();
+
+	
+}

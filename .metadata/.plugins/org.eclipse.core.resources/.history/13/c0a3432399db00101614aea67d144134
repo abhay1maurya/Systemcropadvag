@@ -1,0 +1,270 @@
+/* ==================== KRISHI SAHAYAK BLOG SCRIPT ==================== */
+/* ==================== CLEAN + FIXED VERSION ======================== */
+
+let blogPostsData = [];
+let currentActivePostId = null;
+
+/* ==================== DOM READY ==================== */
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("KrishiSahayak Blog Loaded");
+
+    initDataModel();
+    initHeader();
+    initMobileMenu();
+    initLanguageToggle();
+    initProfileModal();
+    initCategoryFilter();
+    initSearchFunctionality();
+    initLoadMore();
+    initNewsletter();
+    initCardInteractions();
+    initCreatePost();
+    initArticleModalLogic();
+});
+
+/* ==================== SAFE HELPERS ==================== */
+const safeText = (p, s) => p.querySelector(s)?.innerText.trim() || "";
+const safeSrc = (p, s) => p.querySelector(s)?.src || "";
+
+/* ==================== 1. DATA MODEL ==================== */
+function initDataModel() {
+    const cards = document.querySelectorAll(".blog-post-card");
+
+    cards.forEach((card, index) => {
+        const id = `post-${index}`;
+        card.dataset.id = id;
+
+        const stats = card.querySelectorAll(".blog-post-stats span");
+
+        blogPostsData.push({
+            id,
+            title: safeText(card, ".blog-post-title"),
+            excerpt: safeText(card, ".blog-post-excerpt"),
+            content: `<p>${safeText(card, ".blog-post-excerpt")}</p>`,
+            image: safeSrc(card, ".blog-post-image img"),
+            author: {
+                name: safeText(card, ".blog-post-author h6"),
+                role: safeText(card, ".blog-post-author span"),
+                img: safeSrc(card, ".blog-author-img")
+            },
+            stats: {
+                likes: parseInt(stats[0]?.innerText.replace(/\D/g, "")) || 0,
+                comments: parseInt(stats[1]?.innerText.replace(/\D/g, "")) || 0,
+                isLiked: false,
+                isFollowing: false
+            },
+            comments: []
+        });
+    });
+
+    console.log("Posts Initialized:", blogPostsData.length);
+}
+
+/* ==================== 2. HEADER SCROLL ==================== */
+function initHeader() {
+    const header = document.querySelector(".blog-header-section");
+    window.addEventListener("scroll", () => {
+        header.style.boxShadow =
+            window.scrollY > 50
+                ? "0 4px 15px rgba(0,0,0,.15)"
+                : "0 2px 15px rgba(0,0,0,.05)";
+    });
+}
+
+/* ==================== 3. MOBILE MENU ==================== */
+function initMobileMenu() {
+    const toggle = document.getElementById("mobileToggle");
+    const menu = document.getElementById("mobileMenu");
+
+    toggle.addEventListener("click", () => {
+        menu.classList.toggle("active");
+        document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "";
+        toggle.querySelector("i").className = menu.classList.contains("active")
+            ? "fas fa-times"
+            : "fas fa-bars";
+    });
+}
+
+/* ==================== 4. LANGUAGE ==================== */
+function initLanguageToggle() {
+    const wrapper = document.getElementById("modernLangToggle");
+    const btn = wrapper.querySelector(".modern-lang-btn");
+
+    btn.addEventListener("click", e => {
+        e.stopPropagation();
+        wrapper.classList.toggle("active");
+    });
+
+    document.addEventListener("click", () => wrapper.classList.remove("active"));
+}
+
+/* ==================== 5. PROFILE ==================== */
+function initProfileModal() {
+    const wrapper = document.querySelector(".blog-profile-wrapper");
+    document.getElementById("profileBtn").addEventListener("click", e => {
+        e.stopPropagation();
+        wrapper.classList.toggle("active");
+    });
+
+    document.addEventListener("click", () => wrapper.classList.remove("active"));
+}
+
+/* ==================== 6. LOAD MORE ==================== */
+function initLoadMore() {
+    const cards = [...document.querySelectorAll(".blog-post-card")];
+    const btn = document.getElementById("loadMoreBtn");
+
+    let visible = 3;
+    cards.forEach((c, i) => (c.style.display = i < visible ? "block" : "none"));
+
+    btn.addEventListener("click", () => {
+        visible += 3;
+        cards.forEach((c, i) => (c.style.display = i < visible ? "block" : "none"));
+        if (visible >= cards.length) btn.style.display = "none";
+    });
+}
+
+/* ==================== 7. CATEGORY FILTER ==================== */
+function initCategoryFilter() {
+    const categories = document.querySelectorAll(".blog-category-card");
+    const posts = document.querySelectorAll(".blog-post-card");
+
+    categories.forEach(cat => {
+        cat.addEventListener("click", () => {
+            categories.forEach(c => c.classList.remove("active"));
+            cat.classList.add("active");
+
+            const key = cat.innerText.toLowerCase();
+
+            posts.forEach(p => {
+                const postCat = p.dataset.category || "";
+                p.style.display =
+                    key.includes("all") || postCat.includes(key) ? "block" : "none";
+            });
+        });
+    });
+}
+
+/* ==================== 8. SEARCH ==================== */
+function initSearchFunctionality() {
+    const input = document.querySelector(".blog-search-box input");
+    const btn = document.querySelector(".blog-search-btn");
+
+    const search = () => {
+        const term = input.value.toLowerCase();
+        document.querySelectorAll(".blog-post-card").forEach(p => {
+            p.style.display = p.innerText.toLowerCase().includes(term)
+                ? "block"
+                : "none";
+        });
+    };
+
+    btn.addEventListener("click", search);
+    input.addEventListener("keypress", e => e.key === "Enter" && search());
+}
+
+/* ==================== 9. CARD INTERACTIONS ==================== */
+function initCardInteractions() {
+    document.querySelectorAll(".blog-post-card").forEach(card => {
+        const id = card.dataset.id;
+
+        card.addEventListener("click", e => {
+            if (!e.target.closest(".blog-post-stats"))
+                openArticleModal(id);
+        });
+
+        card.querySelector(".blog-read-btn")?.addEventListener("click", e => {
+            e.stopPropagation();
+            openArticleModal(id);
+        });
+
+        card.querySelector(".blog-post-stats span")?.addEventListener("click", e => {
+            e.stopPropagation();
+            toggleLike(id);
+        });
+    });
+}
+
+/* ==================== 10. ARTICLE MODAL ==================== */
+function initArticleModalLogic() {
+    const modal = document.getElementById("articleModal");
+    modal.querySelector(".blog-modal-close").onclick = closeModal;
+    modal.onclick = e => e.target === modal && closeModal();
+
+    document.getElementById("modalLikeBtn").onclick = () => toggleLike(currentActivePostId);
+
+    document.getElementById("modalPostCommentBtn").onclick = () => {
+        const input = document.getElementById("modalCommentInput");
+        if (!input.value) return;
+
+        const post = blogPostsData.find(p => p.id === currentActivePostId);
+        post.comments.unshift({ user: "You", text: input.value });
+        post.stats.comments++;
+        input.value = "";
+        updateModalUI(post);
+    };
+}
+
+function openArticleModal(id) {
+    const post = blogPostsData.find(p => p.id === id);
+    currentActivePostId = id;
+
+    document.getElementById("modalArticleTitle").innerText = post.title;
+    document.getElementById("modalArticleContent").innerHTML = post.content;
+    document.getElementById("modalAuthorName").innerText = post.author.name;
+    document.getElementById("modalAuthorRole").innerText = post.author.role;
+    document.getElementById("modalAuthorImg").src = post.author.img;
+
+    updateModalUI(post);
+    document.getElementById("articleModal").classList.add("active");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+    document.getElementById("articleModal").classList.remove("active");
+    document.body.style.overflow = "";
+}
+
+/* ==================== 11. LIKE ==================== */
+function toggleLike(id) {
+    const post = blogPostsData.find(p => p.id === id);
+    post.stats.isLiked = !post.stats.isLiked;
+    post.stats.likes += post.stats.isLiked ? 1 : -1;
+    updateModalUI(post);
+}
+
+/* ==================== 12. MODAL UI ==================== */
+function updateModalUI(post) {
+    document.getElementById("modalLikeCount").innerText = post.stats.likes;
+    document.getElementById("modalCommentCount").innerText = post.stats.comments;
+}
+
+/* ==================== 13. NEWSLETTER ==================== */
+function initNewsletter() {
+    document
+        .querySelectorAll(".blog-newsletter-form, .blog-footer-newsletter")
+        .forEach(f => {
+            f.addEventListener("submit", e => {
+                e.preventDefault();
+                alert("Subscribed Successfully!");
+                f.reset();
+            });
+        });
+}
+
+/* ==================== 14. CREATE POST MODAL ==================== */
+function initCreatePost() {
+    const modal = document.getElementById("createPostModal");
+
+    document.getElementById("headerCreateBtn").onclick =
+    document.getElementById("sectionCreateBtn").onclick = () => {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+    };
+
+    document.getElementById("closeCreateModal").onclick =
+    document.getElementById("cancelCreateBtn").onclick = () => {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+    };
+}
