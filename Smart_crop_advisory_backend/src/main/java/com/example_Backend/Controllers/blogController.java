@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example_Backend.DTO.BlogPostDTO;
 import com.example_Backend.Entity.BlogCommentEntity;
 import com.example_Backend.Entity.BlogPostEntity;
 import com.example_Backend.entityServices.BlogServices;
@@ -28,13 +29,22 @@ public class blogController {
 	@Autowired
 	BlogServices blogServices;
 	
-	@PostMapping( value ="/createBlog" , 
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-	        produces = MediaType.APPLICATION_JSON_VALUE
-			)
-	public BlogPostEntity createBlog(@RequestBody BlogPostEntity blog , @RequestParam("email")  String email) {
-		return this.blogServices.createBlog(blog, email);
+//	@PostMapping( value ="/createBlog"
+//			)
+//	public BlogPostEntity createBlog(@RequestBody BlogPostEntity blog , @RequestParam("email")  String email) {
+//		return this.blogServices.createBlog(blog, email);
+//	}
+//	
+	
+	@PostMapping("/createBlog")
+	public BlogPostDTO createBlog(
+	        @RequestBody BlogPostDTO blogDto,
+	        @RequestParam String email) {
+
+	    return blogServices.createBlog(blogDto, email);
 	}
+	
+	
 	
 	@GetMapping("/getbyid/{user_id}")
 	public BlogPostEntity getpostById(@PathVariable("user_id") int id) {

@@ -27,7 +27,7 @@ public class BlogPostEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
     
-    private String Category;
+    private String category;
     private String tags;
     private String img;
 
@@ -89,12 +89,15 @@ public class BlogPostEntity {
 		this.user = user;
 	}
 	
+	
+
+
 	public String getCategory() {
-		return Category;
+		return category;
 	}
 
 	public void setCategory(String category) {
-		Category = category;
+		this.category = category;
 	}
 
 	public String getTags() {
@@ -112,15 +115,20 @@ public class BlogPostEntity {
 	public void setImg(String img) {
 		this.img = img;
 	}
+	
+	
+	
 
 	
+	
+
 	public BlogPostEntity(int postId, String title, String content, String category, String tags, String img, int likes,
 			LocalDateTime createdAt, UserEntity user) {
 		super();
 		this.postId = postId;
 		this.title = title;
 		this.content = content;
-		Category = category;
+		this.category = category;
 		this.tags = tags;
 		this.img = img;
 		this.likes = likes;

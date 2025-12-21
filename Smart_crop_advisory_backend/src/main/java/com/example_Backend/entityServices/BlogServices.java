@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example_Backend.DTO.BlogPostDTO;
 import com.example_Backend.Entity.BlogCommentEntity;
 import com.example_Backend.Entity.BlogPostEntity;
 import com.example_Backend.Entity.UserEntity;
@@ -28,7 +29,6 @@ public class BlogServices {
 	
 	@Autowired
 	UserRepository userrepo;
-	
 	public BlogPostEntity createBlog(BlogPostEntity blog , String email) {
 		
 			UserEntity user=this.userrepo.findByEmail(email).orElse(null);
@@ -40,6 +40,45 @@ public class BlogServices {
 		
 	     return  Blogpost.save(blog);
 	}
+	
+	
+	public BlogPostDTO createBlog(BlogPostDTO dto, String email) {
+
+	    UserEntity user = this.userrepo.findByEmail(email).orElse(null);
+	    if(user==null) {
+			return null;
+		}
+
+	    BlogPostEntity blog = new BlogPostEntity();
+	    blog.setTitle(dto.getTitle());
+	    blog.setContent(dto.getContent());
+	    blog.setCategory(dto.getCategory());
+	    blog.setTags(dto.getTags());
+	    blog.setImg(dto.getImg());
+	    blog.setLikes(0);
+	    blog.setCreatedAt(LocalDateTime.now());
+	    blog.setUser(user);
+
+	    BlogPostEntity saved = Blogpost.save(blog);
+
+	    BlogPostDTO response = new BlogPostDTO();
+	    response.setPostId(saved.getPostId());
+	    response.setTitle(saved.getTitle());
+	    response.setContent(saved.getContent());
+	    response.setCategory(saved.getCategory());
+	    response.setTags(saved.getTags());
+	    response.setImg(saved.getImg());
+	    response.setLikes(saved.getLikes());
+	    response.setCreatedAt(saved.getCreatedAt());
+	    response.setUser(saved.getUser());
+
+	    return response;
+	}
+
+	
+	
+	
+	
 	
 	public BlogPostEntity getpostById(int id) {
 	    return this.Blogpost.findById(id).orElse(null);
