@@ -14,7 +14,7 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 
 # OpenAI main API key (works for all models: chat, embedding, speech, etc.)
-spring.ai.openai.api-key=openai
+spring.ai.openai.api-key=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
 
 
 
