@@ -155,7 +155,7 @@ The intelligence layer consists of three independent models exposed via **FastAP
 
 
 * **Inputs:** N, P, K, Temperature, Humidity, pH, Rainfall.
-* **Performance:** ~99.3% Accuracy on test data.
+* **Performance:** ~93.3% Accuracy on test data.
 * **Unique Feature:** Uses feature scaling (`StandardScaler`) to normalize rainfall and chemical data for higher precision.
 
 </details>
@@ -167,7 +167,7 @@ The intelligence layer consists of three independent models exposed via **FastAP
 * **Algorithm:** **Voting Classifier (Soft Voting)** combining Random Forest and Gradient Boosting.
 * **Inputs:** Soil Type, Crop Type, N, P, K, Moisture, Weather data.
 * **Logic Layer:** Includes a post-processing rule engine. *Example: If the model suggests 'Complex NPK' but Nitrogen is critically low, the system overrides to suggest 'Urea'.*
-* **Performance:** ~95.75% Accuracy.
+* **Performance:** ~95% Accuracy.
 
 </details>
 
@@ -180,7 +180,7 @@ The intelligence layer consists of three independent models exposed via **FastAP
 
 
 * **Input:** 224x224 RGB Images.
-* **Performance:** ~94-96% Validation Accuracy.
+* **Performance:** ~83% Validation Accuracy.
 * **Classes:** Includes Blights, Rusts, Mildews, and Healthy states for crops like Tomato, Potato, Corn, and Rice.
 
 </details>
@@ -197,7 +197,7 @@ The intelligence layer consists of three independent models exposed via **FastAP
 
 ### Phase 2: AI Microservices (Python)
 
-*Requires Python 3.9+*
+*Requires Python 3.14*
 
 ```bash
 # Navigate to models folder
