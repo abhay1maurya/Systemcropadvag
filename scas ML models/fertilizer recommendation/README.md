@@ -1,162 +1,156 @@
-🧪 Fertilizer Recommendation Model
-Smart Crop Advisory System (SCAS – Krishi Sahayak)
-Module Type: Machine Learning (Classification)
-Purpose: Recommend the most suitable fertilizer based on crop, soil, and weather conditions
-Scope: Academic / College Project Only
 
-📌 Module Overview
-The Fertilizer Recommendation Model is designed to assist farmers in selecting the appropriate fertilizer based on:
+# 🧪 Smart Crop Advisory System (SCAS) - Module: Fertilizer Recommendation
 
-Crop type
+> **Part of the Krishi Sahayak Ecosystem** > *An Intelligent Nutrient Management System using Ensemble Machine Learning.*
 
-Soil nutrient levels (N, P, K)
+![Python](https://img.shields.io/badge/Python-3.14%20-blue)
+![ML](https://img.shields.io/badge/Model-Voting%20Ensemble-orange)
+![Accuracy](https://img.shields.io/badge/Accuracy-95.75%25-brightgreen)
+![Backend](https://img.shields.io/badge/API-FastAPI-teal)
+![Status](https://img.shields.io/badge/Status-Academic%20Prototype-lightgrey)
 
-Soil condition
+## 📌 Module Overview
 
-Weather parameters
+The **Fertilizer Recommendation Model** acts as the chemical expert within the Krishi Sahayak system. Instead of relying on manual guesswork or generic dosage, this module analyzes the specific chemical composition of the soil to recommend the exact fertilizer required.
 
-Instead of manual guesswork, this model provides data‑driven fertilizer suggestions to improve yield and reduce excessive fertilizer usage.
+By correlating crop requirements with current soil nutrient levels, the system aims to:
+* 📉 **Reduce Cost:** Prevent excessive use of expensive fertilizers.
+* 🌱 **Improve Yield:** Ensure crops get exactly what they lack.
+* 🌍 **Protect Soil:** Prevent soil degradation caused by chemical imbalance.
 
-The system recommends the name of the fertilizer (e.g., Urea, DAP, MOP, Complex NPK) based on learned patterns from agricultural data.
+---
 
-🧠 Machine Learning Architecture
-🔹 Problem Type
-Supervised Multiclass Classification
+## 🧠 Machine Learning Architecture
 
-Output: Fertilizer Name
+**Problem Type:** Supervised Multiclass Classification  
+**Output:** Recommended Fertilizer Name (e.g., Urea, DAP, MOP)
 
-🔹 Algorithms Used
-The model uses an Ensemble Learning approach (Voting Classifier):
+To ensure high reliability, we utilize an **Ensemble Learning Approach** specifically a **Voting Classifier**.
 
-Algorithm	Role
-Random Forest	Handles non‑linear relationships and feature interactions
-Gradient Boosting	Improves prediction accuracy and generalization
-The final prediction is obtained using soft voting, which averages probabilities from both models.
+| Component | Algorithm | Role |
+| :--- | :--- | :--- |
+| **Model A** | **Random Forest** | Handles complex, non-linear relationships between soil nutrients and crop types. |
+| **Model B** | **Gradient Boosting** | Reduces bias and improves generalization on unseen data. |
+| **Aggregator** | **Soft Voting** | Averages the probability outputs of both models to select the most confident prediction. |
 
-📊 Dataset Information
-Total Samples: ~5,500 records
+---
 
-Source: Public agricultural datasets (processed for academic use)
+## 🧠 Intelligent Logic Layer (Post-Processing)
 
-Dataset Location: dataset/ folder
+Unlike standard ML models that simply output a label, this module includes a **Rule-Based Logic Layer** to ensure recommendations are chemically sound.
 
-Features Used:
-Crop Type
+* **Scenario A:** If the model predicts a complex fertilizer, but **Nitrogen** is critically low → The system overrides/refines the suggestion to **Urea** (High N).
+* **Scenario B:** If **Phosphorus** is the limiting factor → The system prioritizes **DAP**.
+* **Scenario C:** If **Potassium** is deficient → The system suggests **MOP**.
 
-Soil Type
+> This hybrid approach (ML + Rule-based verification) ensures the output is not just statistically correct, but **agronomically valid**.
 
-Nitrogen (N)
+---
 
-Phosphorus (P)
+## 📥 Input Data Specifications
 
-Potassium (K)
+The model processes **8 key agricultural parameters**:
 
-Temperature
+| Feature | Description | Type |
+| :--- | :--- | :--- |
+| **Crop Type** | The specific crop being cultivated | Categorical (Encoded) |
+| **Soil Type** | Texture/Composition (e.g., Loamy, Sandy) | Categorical (Encoded) |
+| **Nitrogen (N)** | Current Nitrogen level in soil | Numerical |
+| **Phosphorus (P)**| Current Phosphorus level in soil | Numerical |
+| **Potassium (K)** | Current Potassium level in soil | Numerical |
+| **Temperature** | Avg. climatic temperature | Numerical |
+| **Humidity** | Relative air humidity | Numerical |
+| **Moisture** | Current soil moisture content | Numerical |
 
-Humidity
+**Dataset Size:** ~5,500 Records (Sourced from public agricultural repositories).
 
-Soil Moisture
+---
 
-Categorical features are encoded during preprocessing.
+## 🛠️ Project Structure
 
-⚙️ Preprocessing Pipeline
-Label Encoding for crop type and soil type
+```text
+📂 fertilizer_recommendation/
+│
+├── 📄 fertilizer_api.py        # FastAPI Microservice (Entry Point)
+├── 📄 fertilizer_model_final.pkl # Serialized Model + Scalers + Encoders
+├── 📄 fertilizer_training.ipynb  # Jupyter Notebook for Training
+├── 📄 requirements.txt         # Python Dependencies
+│
+└── 📄 README.md                # Documentation
 
-Feature scaling using StandardScaler
+```
 
-Feature order validation during prediction
+---
 
-Cleaned and normalized dataset used for training
+## 💻 Environment Setup
 
-The same preprocessing pipeline is reused during inference to ensure consistency.
+### 1. Prerequisites
 
-📂 Files Used in This Module
-File	Description
-fertilizer_training.ipynb	Model training and evaluation notebook
-fertilizer_model_final.pkl	Trained ensemble model with encoders & scaler
-fertilizer_api.py	FastAPI backend for predictions
-index_fertilizer.html	Frontend interface for testing
-dataset/	Contains fertilizer dataset
-requirements.txt	Python dependencies
-💻 Environment Setup
-✅ Supported Python Version
-Python 3.9 – 3.11
+* **Python Version:** 3.14
 
-❌ Python 3.14 is NOT valid and should not be used
 
-Create Virtual Environment (Recommended)
+### 2. Installation
+
+```bash
+# Create Virtual Environment
 python -m venv venv
-source venv/bin/activate   # Linux / Mac
-venv\Scripts\activate      # Windows
 
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (Mac/Linux)
+source venv/bin/activate
+
+# Install Dependencies
 pip install -r requirements.txt
-Alternative
-Training notebook can also be executed using Jupyter Notebook or Google Colab
 
-🔌 API Integration (FastAPI)
-The fertilizer model is exposed as a FastAPI microservice.
+```
 
-Start the API Server
+---
+
+## ▶️ Running the Service
+
+The model is exposed via a lightweight FastAPI server.
+
+1. **Start the Server:**
+```bash
 python fertilizer_api.py
-Server runs at: http://127.0.0.1:8001
 
-Swagger UI available at:
-http://127.0.0.1:8001/docs
+```
 
-The API receives soil, crop, and weather data and returns the recommended fertilizer name.
 
-🧠 Fertilizer Logic Layer (Post‑Processing)
-The system includes a logic layer to improve real‑world usability.
+2. **Access Points:**
+* **API URL:** `http://127.0.0.1:8001`
+* **Swagger UI (Testing):** `http://127.0.0.1:8001/docs`
 
-If the model predicts a generic fertilizer category, the logic layer refines it using N‑P‑K values:
 
-If Nitrogen is low → Recommend Urea
 
-If Phosphorus is low → Recommend DAP
+---
 
-If Potassium is low → Recommend MOP
+## 📊 Model Performance
 
-This makes recommendations farmer‑friendly and actionable.
+* **Test Accuracy:** **~95.75%**
+* **Validation Strategy:** Stratified K-Fold Cross Validation.
+* **Robustness:** High precision in distinguishing between chemically similar fertilizers (e.g., 14-35-14 vs. 17-17-17).
 
-📊 Model Performance
-Metric	Value
-Test Accuracy	~95.75%
-Algorithm	Voting Ensemble
-Validation	Stratified K‑Fold
-Dataset Size	~5,500 samples
-⚠️ Performance may vary with real‑world soil report variations.
+---
 
-🧪 How to Use the Model
-Enter soil and crop details from a soil report
+## ⚠️ Limitations
 
-Provide basic weather information
+* **Dosage:** The model recommends the *type* of fertilizer, not the exact quantity (kg/acre). Quantity depends on the specific age of the crop.
+* **Growth Stage:** Recommendations assume a pre-sowing or general deficiency context, not specific growth stages (e.g., flowering vs. fruiting).
 
-Submit the form via frontend or API
+---
 
-Receive the recommended fertilizer name
+## 📜 Disclaimer & License
 
-This assists farmers in nutrient‑balanced fertilizer selection.
+* **Academic Use Only:** This project is developed strictly for educational purposes and college evaluations.
+* **Advisory Nature:** Recommendations are based on data patterns. Always consult a local agricultural extension officer before application.
+* **License:** Free for academic and learning use.
 
-⚠️ Limitations
-Does not consider:
+---
 
-Crop growth stage
+<p align="center">
+<b>Krishi Sahayak</b> | Smart Farming for a Better Future
+</p>
 
-Fertilizer timing and dosage
-
-Market availability
-
-The model provides decision support, not guaranteed outcomes.
-
-📜 Disclaimer
-This module is copyrighted
-
-Intended only for college / academic projects
-
-Not for commercial deployment
-
-Output recommendations are advisory
-
-📝 License
-Academic Use License
-Free to use for learning, demos, and evaluation.
